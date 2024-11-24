@@ -34,6 +34,26 @@ router.post("/buy", (req, res) => {
     }
 
     else {
+        if (STOCK_BALANCES[userId] === undefined) {
+            STOCK_BALANCES[userId] = {
+                [stockSymbol]: {
+                    yes: {
+                        quantity,
+                        locked: 0
+                    }, 
+                    no: {
+                        quantity: 0,
+                        locked: 0
+                    }                    
+                }
+            }
+        } else {
+            STOCK_BALANCES[userId][stockSymbol]["yes"].quantity += quantity
+        }
+
+        // Re-evaluating user's balance
+        INR_BALANCES[userId]["balance"] -= quantity * price
+        
         if (Object.keys(ORDERBOOK).length === 0) {
             ORDERBOOK[stockSymbol] = {
     

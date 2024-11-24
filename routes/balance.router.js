@@ -36,7 +36,7 @@ const balanceFinder = (userId) => {
     let response = {}
     for (const stockName in STOCK_BALANCES[userId]) {
         for (const stockType in STOCK_BALANCES[userId][stockName]) {
-            const { quantity, locked } = STOCK_BALANCES[userId][stockName][stockType]
+            const { quantity } = STOCK_BALANCES[userId][stockName][stockType]
             response[stockName] = quantity
         }
     }
@@ -53,7 +53,7 @@ router.get("/stock/:userId", (req, res) => {
         })
     } else {
         res.status(404).json({
-            message: "User not exists here"
+            message: "User has not bought any stocks"
         })
     }
 })

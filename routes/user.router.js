@@ -16,9 +16,7 @@ router.post("/create/:userId", (req, res) => {
             balance: 0,
             locked: 0
         }
-        STOCK_BALANCES[userId] = {
-
-        }
+        
         res.json({
             message: "User created succesffully"
         })
