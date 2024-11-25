@@ -1,44 +1,59 @@
 const { ORDERBOOK, STOCK_BALANCES, INR_BALANCES } = require("../store/variables")
 const { stockBalance } = require("./stockBalance")
 
-function fillOrder(userId, stockSymbol, quantity, price, stockType) {
+function fillOrderBook(userId, stockSymbol, quantity, price, stockType) {
     if (!STOCK_BALANCES[stockSymbol]) {
         return false
     }
-    if (ORDERBOOK[stockSymbol]) {
-        if (ORDERBOOK[stockSymbol][stockType]) {
-            if (ORDERBOOK[stockSymbol][stockType][price]) {
-                ORDERBOOK[stockSymbol][stockType][price]['total'] += quantity
-                if (!ORDERBOOK[stockSymbol][stockType][price]['orders'][userId]) {
-                    ORDERBOOK[stockSymbol][stockType][price]['orders'][userId] = quantity    
+    if (ORDERBOOK["buy"]) {
+        if (ORDERBOOK["buy"][stockSymbol]) {
+            if (ORDERBOOK["buy"][stockSymbol][stockType]) {
+                if (ORDERBOOK["buy"][stockSymbol][stockType][price]) {
+                    ORDERBOOK["buy"][stockSymbol][stockType][price]['total'] += quantity
+                    if (!ORDERBOOK["buy"][stockSymbol][stockType][price]['orders'][userId]) {
+                        ORDERBOOK["buy"][stockSymbol][stockType][price]['orders'][userId] = quantity    
+                    } else {
+                        ORDERBOOK["buy"][stockSymbol][stockType][price]['orders'][userId] += quantity
+                    }
                 } else {
-                    ORDERBOOK[stockSymbol][stockType][price]['orders'][userId] += quantity
+                    ORDERBOOK["buy"][stockSymbol][stockType][price] = {
+                        total: quantity,
+                        orders: {
+                            [userId]: quantity
+                        }
+                    }
                 }
             } else {
-                ORDERBOOK[stockSymbol][stockType][price] = {
-                    total: quantity,
-                    orders: {
-                        [userId]: quantity
+                ORDERBOOK["buy"][stockSymbol][stockType] = {
+                    [price]: {
+                        total: quantity,
+                        orders: {
+                            [userId]: quantity
+                        }
                     }
                 }
             }
         } else {
-            ORDERBOOK[stockSymbol][stockType] = {
-                [price]: {
-                    total: quantity,
-                    orders: {
-                        [userId]: quantity
+            ORDERBOOK["buy"][stockSymbol] = {
+                [stockType]: {
+                    [price]: {
+                        total: quantity,
+                        orders: {
+                            [userId]: quantity
+                        }
                     }
                 }
             }
         }
     } else {
-        ORDERBOOK[stockSymbol] = {
-            [stockType]: {
-                [price]: {
-                    total: quantity,
-                    orders: {
-                        [userId]: quantity
+        ORDERBOOK["buy"] = {
+            [stockSymbol]: {
+                [stockType]: {
+                    [price]: {
+                        total: quantity,
+                        orders: {
+                            [userId]: quantity
+                        }
                     }
                 }
             }
@@ -54,4 +69,4 @@ function fillOrder(userId, stockSymbol, quantity, price, stockType) {
     }
 }
 
-exports.fillOrder = fillOrder   
+exports.fillOrderBook = fillOrderBook   

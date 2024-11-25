@@ -3,7 +3,7 @@ const { INR_BALANCES, ORDERBOOK, STOCK_BALANCES } = require("../store/variables"
 const { checkStock } = require("../utils/checkStock");
 const { checkUser } = require("../utils/checkUser");
 const { checkBalance } = require("../utils/checkBalance");
-const { fillOrder } = require("../utils/fillOrder");
+const { fillOrderBook } = require("../utils/fillOrder");
 const { stockBalance } = require("../utils/stockBalance");
 
 const router = Router()
@@ -31,8 +31,8 @@ router.post("/buy", (req, res) => {
             message: "No user found"
         })
     }
-    const fillOrderBook = fillOrder(userId, stockSymbol, quantity, price, stockType)
-    if (fillOrderBook) {
+    const OrderBook = fillOrderBook(userId, stockSymbol, quantity, price, stockType)
+    if (OrderBook) {
         return res.json({
             message: "Order placed Successfully"
         })
@@ -41,6 +41,16 @@ router.post("/buy", (req, res) => {
             message: "No stocks found of this name"
         })
     }
+})
+
+router.post("/sell", (req, res) => {
+    const { userId, stockSymbol, quantity, price, stockType } = req.body
+    if (INR_BALANCES[userId]) {
+        return res.status(404).json({
+            message: "No users found"
+        })
+    }
+    
 })
 
 exports.orderRouter = router

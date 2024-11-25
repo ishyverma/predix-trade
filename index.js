@@ -56,4 +56,8 @@ app.post("/onramp/inr", (req, res) => {
     }
 })
 
+app.get("/orderbook/:stockSymbol", (req, res) => {
+    
+})
+
 app.listen(3000)
