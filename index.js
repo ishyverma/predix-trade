@@ -39,13 +39,18 @@ app.post("/reset", (req, res) => {
 // Sorted
 app.post("/onramp/inr", (req, res) => {
     const { userId, amount } = req.body
+    if (!amount) {
+        return res.status(404).json({
+            message: "Please give valid amount"
+        })
+    }
     if (INR_BALANCES[userId]) {
         INR_BALANCES[userId]["balance"] += amount
         res.json({
             message: "Amount added successfully"
         })
     } else {
-        res.status(404).json({
+        return res.status(404).json({
             message: "User not registered"
         })
     }
