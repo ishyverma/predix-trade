@@ -18,7 +18,8 @@ const quantityFill = (userId, stockSymbol, quantity, price, stockType) => {
                             if (ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'][allUsers[i]] > quantity) {
                                 if (remainingQuantity != 0) {
                                     ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'][allUsers[i]] -= quantity
-                                    stockBalance(userId, stockSymbol, stockType, remainingQuantity)
+                                    console.log(remainingQuantity)
+                                    stockBalance(userId, stockSymbol, stockType, quantity=remainingQuantity)
                                     return remainingQuantity
                                 }  else {
                                     break
@@ -42,7 +43,8 @@ const quantityFill = (userId, stockSymbol, quantity, price, stockType) => {
                                     }
                                 }
                                 delete ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['total']
-                                stockBalance(userId, stockSymbol, stockType, remainingQuantity)
+                                stockBalance(userId, stockSymbol, stockType, quantity=remainingQuantity)
+                                console.log(remainingQuantity)
                                 return remainingQuantity
                             }
                         }
@@ -57,7 +59,8 @@ const quantityFill = (userId, stockSymbol, quantity, price, stockType) => {
                             }
                         }
                         delete ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['total']
-                        stockBalance(userId, stockSymbol, stockType, remainingQuantity)
+                        console.log(remainingQuantity)
+                        stockBalance(userId, stockSymbol, stockType, quantity=remainingQuantity)
                         return remainingQuantity
                     }
                 }

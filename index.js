@@ -1,9 +1,9 @@
 const express = require("express")
-const { userRouter } = require("./routes/user.router")
-const { symbolRouter } = require("./routes/symbol.router")
+const { userRouter } = require("./routes/user")
+const { symbolRouter } = require("./routes/symbol")
 const { ORDERBOOK, INR_BALANCES, STOCK_BALANCES } = require("./store/variables")
-const { balanceRouter } = require("./routes/balance.router")
-const { orderRouter } = require("./routes/order.router")
+const { balanceRouter } = require("./routes/balance")
+const { orderRouter } = require("./routes/order")
 
 const app = express()
 app.use(express.json())
