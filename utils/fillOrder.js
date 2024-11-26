@@ -1,22 +1,22 @@
 const { ORDERBOOK, STOCK_BALANCES, INR_BALANCES } = require("../store/variables")
 const { stockBalance } = require("./stockBalance")
 
-function fillOrderBook(userId, stockSymbol, quantity, price, stockType) {
+function fillOrderBook(userId, stockSymbol, quantity, price, stockType, orderType) {
     if (!STOCK_BALANCES[stockSymbol]) {
         return false
     }
-    if (ORDERBOOK["buy"]) {
-        if (ORDERBOOK["buy"][stockSymbol]) {
-            if (ORDERBOOK["buy"][stockSymbol][stockType]) {
-                if (ORDERBOOK["buy"][stockSymbol][stockType][price]) {
-                    ORDERBOOK["buy"][stockSymbol][stockType][price]['total'] += quantity
-                    if (!ORDERBOOK["buy"][stockSymbol][stockType][price]['orders'][userId]) {
-                        ORDERBOOK["buy"][stockSymbol][stockType][price]['orders'][userId] = quantity    
+    if (ORDERBOOK[orderType]) {
+        if (ORDERBOOK[orderType][stockSymbol]) {
+            if (ORDERBOOK[orderType][stockSymbol][stockType]) {
+                if (ORDERBOOK[orderType][stockSymbol][stockType][price]) {
+                    ORDERBOOK[orderType][stockSymbol][stockType][price]['total'] += quantity
+                    if (!ORDERBOOK[orderType][stockSymbol][stockType][price]['orders'][userId]) {
+                        ORDERBOOK[orderType][stockSymbol][stockType][price]['orders'][userId] = quantity    
                     } else {
-                        ORDERBOOK["buy"][stockSymbol][stockType][price]['orders'][userId] += quantity
+                        ORDERBOOK[orderType][stockSymbol][stockType][price]['orders'][userId] += quantity
                     }
                 } else {
-                    ORDERBOOK["buy"][stockSymbol][stockType][price] = {
+                    ORDERBOOK[orderType][stockSymbol][stockType][price] = {
                         total: quantity,
                         orders: {
                             [userId]: quantity
@@ -24,7 +24,7 @@ function fillOrderBook(userId, stockSymbol, quantity, price, stockType) {
                     }
                 }
             } else {
-                ORDERBOOK["buy"][stockSymbol][stockType] = {
+                ORDERBOOK[orderType][stockSymbol][stockType] = {
                     [price]: {
                         total: quantity,
                         orders: {
@@ -34,7 +34,7 @@ function fillOrderBook(userId, stockSymbol, quantity, price, stockType) {
                 }
             }
         } else {
-            ORDERBOOK["buy"][stockSymbol] = {
+            ORDERBOOK[orderType][stockSymbol] = {
                 [stockType]: {
                     [price]: {
                         total: quantity,
@@ -46,7 +46,7 @@ function fillOrderBook(userId, stockSymbol, quantity, price, stockType) {
             }
         }
     } else {
-        ORDERBOOK["buy"] = {
+        ORDERBOOK[orderType] = {
             [stockSymbol]: {
                 [stockType]: {
                     [price]: {
@@ -60,12 +60,16 @@ function fillOrderBook(userId, stockSymbol, quantity, price, stockType) {
         }
     }
 
-    INR_BALANCES[userId]['balance'] -= quantity * price
-    const addingBalance = stockBalance(userId, stockSymbol, stockType, quantity)
-    if (addingBalance) {
-        return true
+    if (orderType === 'buy') {
+        INR_BALANCES[userId]['balance'] -= quantity * price
+        const addingBalance = stockBalance(userId, stockSymbol, stockType, quantity)
+        if (addingBalance) {
+            return true
+        } else {
+            return false
+        }
     } else {
-        return false
+        return true
     }
 }
 
