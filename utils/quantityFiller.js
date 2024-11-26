@@ -23,13 +23,38 @@ const quantityFill = (userId, stockSymbol, quantity, price, stockType) => {
                                 }  else {
                                     break
                                 }
+                            } else {
+                                remainingQuantity -= ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['total']
+                                const allUsers = Object.keys(ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'])
+                                for (let i = 0; i < allUsers.length; i++) {
+                                    if (ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]) {
+                                        if (ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders']) {
+                                            delete ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'][allUsers[i]]
+                                        } else {
+                                            continue
+                                        }
+                                    } else {
+                                        if (ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]) {
+                                            delete ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'][allUsers[i]]
+                                        } else {
+                                            continue
+                                        }
+                                    }
+                                }
+                                delete ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['total']
+                                stockBalance(userId, stockSymbol, stockType, remainingQuantity)
+                                return remainingQuantity
                             }
                         }
                     } else {
                         remainingQuantity -= ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['total']
                         const allUsers = Object.keys(ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'])
                         for (let i = 0; i < allUsers.length; i++) {
-                            delete ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'][allUsers[i]]
+                            if (ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'][allUsers[i]]) {
+                                delete ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['orders'][allUsers[i]]
+                            } else {
+                                continue
+                            }
                         }
                         delete ORDERBOOK['sell'][stockSymbol][stockType][priceArray[i]]['total']
                         stockBalance(userId, stockSymbol, stockType, remainingQuantity)
